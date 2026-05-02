@@ -1,0 +1,197 @@
+%% QUICK START - PID Control Strategy
+% 快速开始指南 (Quick Start Guide)
+%
+% ============================================
+% 三分钟快速入门 (Quick Start in 3 Minutes)
+% ============================================
+
+% Step 1: 打开MATLAB，切换到项目文件夹
+%   Open MATLAB
+%   Set Current Folder to: HouseHeatingDemo_Deliverable/HouseHeatingDemo_Deliverable
+
+% Step 2: 运行初始化脚本（仅需一次）
+%   Run in Command Window:
+%   >> PID_Setup_Configuration
+%   This will verify all files and configure the environment
+
+% Step 3: 一键运行PID验证
+%   Run in Command Window:
+%   >> cd PID_Control_Strategy
+%   >> runHeatingDemoQuick_PID
+%   Wait for simulation to complete (about 2 minutes)
+%   View results in Figures 101-103
+
+% ============================================
+% 文件说明 (File Descriptions)
+% ============================================
+
+% 必需文件 (REQUIRED FILES):
+%
+% 1. pidHeatingController.m
+%    - PID控制器核心类
+%    - Core PID controller class
+%    - 包含PID算法、参数管理、成本计算
+%
+% 2. runHeatingDemoQuick_PID.m
+%    - 快速运行脚本（推荐首先运行）
+%    - Quick run script (recommended to start here)
+%    - 使用预配置参数进行三个验证场景
+%
+% 3. pidControlResetFcn.m & pidValidateResetFcn.m
+%    - 环境重置函数
+%    - Environment reset functions
+%    - Simulink自动调用，无需手动运行
+%
+% 4. TrainPIDAgentControlHouseHeatingSystemExample.m
+%    - 完整训练脚本
+%    - Full training example
+%    - 与DQN脚本对标，但使用PID控制
+%
+% 5. compareStrategies.m
+%    - 性能对比工具
+%    - Strategy comparison tool
+%    - 同时运行DQN和PID，自动生成对比报告
+
+% ============================================
+% 推荐运行顺序 (Recommended Execution Order)
+% ============================================
+
+% 第一次使用 (First Time):
+% 1. PID_Setup_Configuration.m    - 验证环境
+% 2. runHeatingDemoQuick_PID.m    - 快速演示
+% 3. 查看图表 101-103 (Figure 101-103)
+
+% 深入了解 (In-Depth Analysis):
+% 1. TrainPIDAgentControlHouseHeatingSystemExample.m  - 详细训练
+% 2. 对比DQN结果 (Compare with DQN results)
+
+% 性能对比 (Performance Comparison):
+% 1. compareStrategies.m          - 自动对比DQN和PID
+
+% ============================================
+% 关键参数 (Key Parameters)
+% ============================================
+
+% 默认PID参数 (Default PID Parameters):
+%   Kp = 0.5       % 比例系数 (Proportional gain)
+%   Ki = 0.01      % 积分系数 (Integral gain)
+%   Kd = 0.1       % 微分系数 (Derivative gain)
+%
+% 温度范围 (Temperature Range):
+%   舒适最小值: 18°C  (Comfort Min)
+%   舒适最大值: 23°C  (Comfort Max)
+%   目标温度: 20.5°C  (Target = midpoint)
+%
+% 评估指标 (Evaluation Metrics):
+%   1. 舒适度违反 (Comfort Violation): 房间温度在[18,23]范围外的分钟数
+%   2. 能耗成本 (Energy Cost): 加热能耗的总成本（美元）
+%   3. 能效比 (Efficiency): (1440-violations) / cost
+
+% ============================================
+% 常见问题 (FAQ)
+% ============================================
+
+% Q1: 如何修改PID参数?
+% A1: 编辑 TrainPIDAgentControlHouseHeatingSystemExample.m
+%     在 "Create PID Controller" 章节中修改 Kp, Ki, Kd 值
+
+% Q2: 如何与DQN对比?
+% A2: 运行 compareStrategies.m
+%     它会同时运行DQN和PID，生成对比报告
+
+% Q3: 为什么PID和DQN结果不同?
+% A3: - DQN使用神经网络学习策略
+%     - PID使用固定的经典控制算法
+%     - 两种方法各有优缺点
+
+% Q4: 如何调优PID参数?
+% A4: 使用Ziegler-Nichols法或其他调参方法
+%     编辑 TrainPIDAgentControlHouseHeatingSystemExample.m
+%     中的 "Optional: Parameter Tuning Section"
+
+% Q5: 为什么模拟很慢?
+% A5: - 使用的是完整的Simscape物理模型
+%     - 每个scenario运行720步(12小时)
+%     - 这是正常的，不需要优化
+
+% ============================================
+% 文件夹结构 (Folder Structure)
+% ============================================
+
+% HouseHeatingDemo_Deliverable/
+% └── HouseHeatingDemo_Deliverable/
+%     ├── 原始DQN文件 (Original DQN files)
+%     │   ├── rlHouseHeatingSystem.slx
+%     │   ├── TrainDQNAgentWithLSTMToControlHouseHeatingSystemExample.m
+%     │   ├── runHeatingDemoQuick.m
+%     │   ├── hRLHeatingSystemResetFcn.m
+%     │   ├── hRLHeatingSystemValidateResetFcn.m
+%     │   ├── HeatControlDQNAgent.mat
+%     │   └── temperatureMar21toApr15_2022.mat
+%     │
+%     └── PID_Control_Strategy/  (新增 - NEW FOLDER)
+%         ├── README_PID.txt                          (详细说明)
+%         ├── QUICKSTART.txt                          (快速入门)
+%         ├── PID_Setup_Configuration.m               (初始化脚本)
+%         ├── pidHeatingController.m                  (PID类定义)
+%         ├── runHeatingDemoQuick_PID.m               (快速运行)
+%         ├── TrainPIDAgentControlHouseHeatingSystemExample.m  (完整训练)
+%         ├── pidControlResetFcn.m                    (训练重置)
+%         ├── pidValidateResetFcn.m                   (验证重置)
+%         └── compareStrategies.m                     (性能对比)
+
+% ============================================
+% 下一步 (Next Steps)
+% ============================================
+
+% 1. 打开 MATLAB
+%    Open MATLAB
+
+% 2. 切换到项目文件夹
+%    Set Current Folder to HouseHeatingDemo_Deliverable/HouseHeatingDemo_Deliverable
+
+% 3. 运行:
+%    Run:
+%    >> cd PID_Control_Strategy
+%    >> PID_Setup_Configuration
+
+% 4. 然后运行:
+%    Then run:
+%    >> runHeatingDemoQuick_PID
+
+% 5. 查看结果
+%    View results in Figures 101-103
+
+% ============================================
+% 联系和支持 (Support)
+% ============================================
+
+% 有问题请参考:
+% - README_PID.txt (详细文档)
+% - 各脚本中的注释 (Script comments)
+% - 原始DQN项目说明 (Original DQN documentation)
+
+% ============================================
+% 许可证 (License)
+% ============================================
+
+% This PID Control Strategy implementation is provided as-is
+% for educational and research purposes.
+% 
+% Based on:
+% - Original DQN House Heating example by MathWorks
+% - Classical PID control theory
+% 
+% Created: May 2, 2026
+
+% ============================================
+% 开始使用! (GET STARTED NOW!)
+% ============================================
+
+% 在 MATLAB 命令窗口中运行:
+% Run in MATLAB Command Window:
+%
+% >> cd PID_Control_Strategy
+% >> runHeatingDemoQuick_PID
+%
+% 享受! (Enjoy!)
